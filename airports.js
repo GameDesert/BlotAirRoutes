@@ -14,13 +14,11 @@ const csv = require('fast-csv');
 const airportLookup = []
 
 
-// Bounding box here is set to cover all of Europe as a square. Alter as you see fit.
-// Moving clockwise from top left
+// Bounding box here is set to cover all of Europe as a quadrilateral. Alter as you see fit.
+// Top left and bottom right ( - | )
 coordinateBoundingBox = [
     [61.43, -14.24],
-    [61.43, 27.25],
-    [34.56, 27.25],
-    [34.56, -14.24]
+    [34.56, 27.25]
 ]
 
 flights = [
@@ -89,6 +87,7 @@ function getCoordinates(airportCode) {
     const latitude = row[6].replace(/\s/g, '')
     const longitude = row[7].replace(/\s/g, '')
     console.log(latitude, longitude)
+    convertToRelative(latitude, longitude, coordinateBoundingBox);
 }
 
 function findRow(airportCode) {
@@ -98,4 +97,10 @@ function findRow(airportCode) {
 function convertToRelative(lat, long, bbox) {
     // Takes latitude, longitude, and bounding box, then returns points relative to the bounding box as decimals (which can then be multiplied by the canvas size)
     // DON'T FORGET TO ACCOUNT FOR THE FACT THAT BLOT DRAWS FROM BOTTOM LEFT
+
+    const relLong = (long - bbox[0][1]) / (bbox[1][1] - bbox[0][1])
+    console.log(relLong)
+
+    const relLat = (lat - bbox[1][0]) / (bbox[0][0] - bbox[1][0]) // Using distance from bottom here; because, again, BLOT DRAWS FROM BOTTOM LEFT
+    console.log(relLat)
 }
