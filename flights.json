@@ -1,0 +1,50 @@
+[
+    {
+        "from": "EDI",
+        "to": "VIE"
+    },
+    {
+        "from": "PRG",
+        "to": "GOA"
+    },
+    {
+        "from": "PIS",
+        "to": "WAW"
+    },
+    {
+        "from": "PIS",
+        "to": "GOA"
+    },
+    {
+        "from": "BCN",
+        "to": "VIE"
+    },
+    {
+        "from": "LCY",
+        "to": "PRG"
+    },
+    {
+        "from": "EDI",
+        "to": "CPH"
+    },
+    {
+        "from": "MAD",
+        "to": "PRG"
+    },
+    {
+        "from": "PIS",
+        "to": "EDI"
+    },
+    {
+        "from": "BCN",
+        "to": "PRG"
+    },
+    {
+        "from": "GOA",
+        "to": "LCY"
+    },
+    {
+        "from": "",
+        "to": "WAW"
+    }
+]

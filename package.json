@@ -1,0 +1,22 @@
+{
+  "name": "blotairroutes",
+  "version": "1.0.0",
+  "description": "Flightpath mapper for Blot (Hackclub).",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GameDesert/BlotAirRoutes.git"
+  },
+  "author": "Desert",
+  "license": "AGPL-3.0",
+  "bugs": {
+    "url": "https://github.com/GameDesert/BlotAirRoutes/issues"
+  },
+  "homepage": "https://github.com/GameDesert/BlotAirRoutes#readme",
+  "dependencies": {
+    "fast-csv": "^5.0.1"
+  }
+}
