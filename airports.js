@@ -11,9 +11,53 @@
 import { createReadStream } from 'fs';
 import { parse } from 'fast-csv';
 import LatLon, { Dms } from 'geodesy/latlon-spherical.js';
+import express from 'express';
+
+
+
+const app = express();
+const port = 34613;
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+app.get('/', (req, res) => {
+    res.send('Welcome to the Flight Plotter API');
+});
+
+app.get('/plot-flights', (req, res) => {
+    const flightsData = req.body;
+
+    const flights = Object.values(flightsData);
+
+    const output = plotall(flights);
+
+    res.json(output);
+});
+
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500).send('Something broke!');
+});
+
+app.listen(port, () => {
+    console.log(`Server is running on http://localhost:${port}`);
+});
+
+// module.exports = {
+//     plotFlights: function () {
+//         createReadStream('airports.dat')
+//             .pipe(parse({ headers: false }))
+//             .on('error', error => console.error(error))
+//             .on('data', row => airportLookup.push(row))
+//             .on('end', () => plotall());
+//     }
+// }
 
 let airportLookup = []
 
+const paper_width = 125;
+const paper_height = 125;
 
 // Bounding box here is set to cover all of Europe as a quadrilateral. Alter as you see fit.
 // Top left and bottom right ( - | )
@@ -22,62 +66,15 @@ const coordinateBoundingBox = [
     [34.56, 27.25]
 ]
 
-const flights = [
-    {
-        "from": "EDI",
-        "to": "VIE"
-    },
-    {
-        "from": "PRG",
-        "to": "GOA"
-    },
-    {
-        "from": "PIS",
-        "to": "WAW"
-    },
-    {
-        "from": "PIS",
-        "to": "GOA"
-    },
-    {
-        "from": "BCN",
-        "to": "VIE"
-    },
-    {
-        "from": "LCY",
-        "to": "PRG"
-    },
-    {
-        "from": "EDI",
-        "to": "CPH"
-    },
-    {
-        "from": "MAD",
-        "to": "PRG"
-    },
-    {
-        "from": "PIS",
-        "to": "EDI"
-    },
-    {
-        "from": "BCN",
-        "to": "PRG"
-    },
-    {
-        "from": "GOA",
-        "to": "LCY"
-    },
-    {
-        "from": "",
-        "to": "WAW"
-    }
-]
+
+
+let output = [];
  
 createReadStream('airports.dat')
     .pipe(parse({ headers: false }))
     .on('error', error => console.error(error))
     .on('data', row => airportLookup.push(row))
-    .on('end', () => plot("LCY", "KRK"));
+    .on('end', () => console.log("Loaded Airports!"));
 
 function plot(start, end) {
     const start_coords = getCoordinates(start);
@@ -89,19 +86,25 @@ function plot(start, end) {
     // points.unshift([parseFloat(start_coords[1]), parseFloat(start_coords[0])]);
     // points.push([parseFloat(end_coords[1]), parseFloat(end_coords[0])]);
 
-    console.log(points)
+    // console.log(points)
 
     const convertedPoints = points.map(obj => convertToRelative(obj[1], obj[0], coordinateBoundingBox));
-    console.log(convertedPoints);
+    // console.log(convertedPoints);
 
     return convertedPoints;
+}
+
+function plotall(flights) {
+    flights.forEach((flight) => {output.push(plot(flight["from"], flight["to"]));});
+    console.log(output);
+    return output;
 }
 
 function getCoordinates(airportCode) {
     const row = findRow(airportCode)
     const latitude = row[6].replace(/\s/g, '')
     const longitude = row[7].replace(/\s/g, '')
-    console.log(latitude, longitude)
+    // console.log(latitude, longitude)
     return [latitude, longitude]
 }
 
@@ -122,7 +125,7 @@ function greatCircle(aLat, aLong, bLat, bLong) {
         points.push(intermediatePoint);
     }
 
-    console.log(points)
+    // console.log(points)
     return points
 }
 
@@ -131,10 +134,10 @@ function convertToRelative(lat, long, bbox) {
     // DON'T FORGET TO ACCOUNT FOR THE FACT THAT BLOT DRAWS FROM BOTTOM LEFT
 
     const relLong = (long - bbox[0][1]) / (bbox[1][1] - bbox[0][1])
-    console.log(relLong)
+    // console.log(relLong)
 
     const relLat = (lat - bbox[1][0]) / (bbox[0][0] - bbox[1][0]) // Using distance from bottom here; because, again, BLOT DRAWS FROM BOTTOM LEFT
-    console.log(relLat)
+    // console.log(relLat)
 
-    return [relLong, relLat] // Longitude first, because it defines the X coordinate, and latitude defines Y
+    return [relLong * paper_width, relLat * paper_height] // Longitude first, because it defines the X coordinate, and latitude defines Y. Multiplied to be relative to paper size.
 }
