@@ -75,7 +75,7 @@ const coordinateBoundingBox = [
 
 
 
-let output = [];
+
  
 createReadStream('airports.dat')
     .pipe(parse({ headers: false }))
@@ -102,6 +102,7 @@ function plot(start, end) {
 }
 
 function plotall(flights) {
+    let output = [];
     flights.forEach((flight) => {output.push(plot(flight["from"], flight["to"]));});
     console.log(output);
     return output;
