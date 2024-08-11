@@ -8,37 +8,37 @@ const height = 125;
 
 setDocDimensions(width, height);
 
-const airports = [
-    {
-        "from": "KRK",
-        "to": "PMI"
-    },
-    // ... rest of the airports data
-];
+const airports = [{
+  "from": "KRK",
+  "to": "SZZ"
+}
+                 ];
+const jsonString = JSON.stringify(airports);
 
-// Send the airports data to the API and retrieve the flight paths
-fetch("https://flightconvert.kotla.eu/plot-flights", {
-    method: "POST",
-    headers: {
-        "Content-Type": "application/json"
-    },
-    body: JSON.stringify(airports)
-})
-    .then(response => response.json())
-    .then(data => {
 
-        const paths = data;
 
-        let finalLines = [];
 
-        // create a polyline
-        paths.forEach(object => {
-            finalLines.push(bt.catmullRom(object));
-        });
 
-        // draw it
-        drawLines(finalLines);
-    })
-    .catch(error => {
-        console.error("Error:", error);
-    });
+function drawout(paths) {
+  let finalLines = [];
+  paths.forEach(object => {
+    finalLines.push(bt.catmullRom(object));
+  });
+  console.log(finalLines);
+  drawLines(finalLines);
+}
+
+const xhr = new XMLHttpRequest();
+
+xhr.open("POST", "https://flightconvert.kotla.eu/plot-flights", false); // `false` makes the request synchronous
+xhr.setRequestHeader("Content-Type", "application/json");
+
+xhr.send(jsonString);
+
+if (xhr.status === 200) {
+    const responseArray = JSON.parse(xhr.responseText);
+    console.log(responseArray);
+
+    // Process the data immediately after receiving the response
+    drawout(responseArray);
+}
