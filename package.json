@@ -17,6 +17,8 @@
   },
   "homepage": "https://github.com/GameDesert/BlotAirRoutes#readme",
   "dependencies": {
-    "fast-csv": "^5.0.1"
-  }
+    "fast-csv": "^5.0.1",
+    "geodesy": "^2.4.0"
+  },
+  "type": "module"
 }
