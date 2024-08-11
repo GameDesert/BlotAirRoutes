@@ -25,7 +25,7 @@ app.get('/', (req, res) => {
     res.send('Welcome to the Flight Plotter API');
 });
 
-app.get('/plot-flights', (req, res) => {
+app.post('/plot-flights', (req, res) => {
     const flightsData = req.body;
 
     const flights = Object.values(flightsData);
