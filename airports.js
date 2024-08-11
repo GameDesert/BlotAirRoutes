@@ -21,6 +21,13 @@ const port = 34613;
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+app.use(function (req, res, next) {
+    res.setHeader("Access-Control-Allow-Origin", "*");
+    res.setHeader('Access-Control-Allow-Methods', '*');
+    res.setHeader("Access-Control-Allow-Headers", "*");
+    next();
+  });
+
 app.get('/', (req, res) => {
     res.send('Welcome to the Flight Plotter API');
 });
