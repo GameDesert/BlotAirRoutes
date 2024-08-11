@@ -96,7 +96,7 @@ function plot(start, end) {
     // console.log(points)
 
     const convertedPoints = points.map(obj => convertToRelative(obj[1], obj[0], coordinateBoundingBox));
-    // console.log(convertedPoints);
+
 
     return convertedPoints;
 }
